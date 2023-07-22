@@ -6,6 +6,7 @@ class node:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.dimention = [x*10, y*10, (x+1)*10, (y+1)*10]
         self.up = None
         self.down = None
         self.left = None
