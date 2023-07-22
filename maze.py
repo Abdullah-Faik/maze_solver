@@ -3,7 +3,7 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
 
-class node:
+class Node:
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -20,35 +20,48 @@ class Maze:
         self.width = width
         self.height = height
         self.wall = self.generate_walls(width, height)
-        self.generate()
+        #self.generate()
 
     def generate_walls(self, width, height):
-        maze = []
+        wall = []
         for i in range(width):
+            s_wall = []
             for j in range(height):
-                maze.append(node(i, j))
-        for node in maze:
-            if node.x == 0:
-                node.left = None
-            else:
-                node.left = maze[(node.x - 1) * height + node.y]
+                s_wall.append(Node(i, j))
+            wall.append(s_wall)
+        for smaze in wall:
+            for node in smaze:
+                if node.x == 0:
+                    node.left = None
+                else:
+                    node.left = wall[node.x - 1][node.y]
+                if node.x == self.width - 1:
+                    node.right = None
+                else:
+                    node.right = wall[node.x + 1][node.y]
+                if node.y == 0:
+                    node.down = None
+                else:
+                    node.down = wall[node.x][node.y - 1]
+                if node.y == self.height - 1:
+                    node.up = None
+                else:
+                    node.up = wall[node.x][node.y + 1]
+        return wall
 
-            if node.x == width - 1:
-                node.right = None
-            else:
-                node.right = maze[(node.x + 1) * height + node.y]
-
-            if node.y == 0:
-                node.down = None
-            else:
-                node.down = maze[node.x * height + node.y - 1]
-
-            if node.y == height - 1:
-                node.up = None
-            else:
-                node.up = maze[node.x * height + node.y + 1]
-
-        return maze
+    def maze_print(self):
+        for smaze in self.wall:
+            for node in smaze:
+                glBegin(GL_LINES)
+                glVertex2f(node.dimention[0], node.dimention[1])
+                glVertex2f(node.dimention[2], node.dimention[1])
+                glVertex2f(node.dimention[2], node.dimention[1])
+                glVertex2f(node.dimention[2], node.dimention[3])
+                glVertex2f(node.dimention[2], node.dimention[3])
+                glVertex2f(node.dimention[0], node.dimention[3])
+                glVertex2f(node.dimention[0], node.dimention[3])
+                glVertex2f(node.dimention[0], node.dimention[1])
+                glEnd()
 
 
 def init():
@@ -60,17 +73,22 @@ def init():
 
 def draw():
     glLoadIdentity()
+    glClear(GL_COLOR_BUFFER_BIT)
+    glColor3f(1.0, 1.0, 1.0)
+    maze.maze_print()
+    glFlush()
 
 
-def main():
+if __name__ == "__main__":
     glutInit()
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
     glutInitWindowSize(500, 500)
     glutInitWindowPosition(100, 100)
     glutCreateWindow("Maze")
-    glutDisplayFunc(draw)
     init()
+
+    # Create the maze object here, outside the draw function
+    maze = Maze(10, 10)
+
+    glutDisplayFunc(draw)
     glutMainLoop()
-
-
-main()
