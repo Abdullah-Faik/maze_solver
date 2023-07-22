@@ -2,16 +2,18 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
+
 class node:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.dimention = [x*10, y*10, (x+1)*10, (y+1)*10]
+        self.dimention = [x, y, x + 1, y + 1]
         self.up = None
         self.down = None
         self.left = None
         self.right = None
         self.visited = False
+
 
 class Maze:
     def __init__(self, width, height):
@@ -25,19 +27,39 @@ class Maze:
         for i in range(width):
             for j in range(height):
                 maze.append(node(i, j))
+        for node in maze:
+            if node.x == 0:
+                node.left = None
+            else:
+                node.left = maze[(node.x - 1) * height + node.y]
+
+            if node.x == width - 1:
+                node.right = None
+            else:
+                node.right = maze[(node.x + 1) * height + node.y]
+
+            if node.y == 0:
+                node.down = None
+            else:
+                node.down = maze[node.x * height + node.y - 1]
+
+            if node.y == height - 1:
+                node.up = None
+            else:
+                node.up = maze[node.x * height + node.y + 1]
+
         return maze
 
 
 def init():
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glMatrixMode(GL_PROJECTION)
-    gluOrtho2D(-1.0, 1.0, -1.0, 1.0)
+    gluOrtho2D(-1, 11, -1, 11)
     glMatrixMode(GL_MODELVIEW)
+
 
 def draw():
     glLoadIdentity()
-
-
 
 
 def main():
@@ -50,5 +72,5 @@ def main():
     init()
     glutMainLoop()
 
-main()
 
+main()
