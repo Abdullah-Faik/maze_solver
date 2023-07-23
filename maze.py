@@ -4,7 +4,6 @@ from OpenGL.GLUT import *
 from pythonds import Stack
 import random
 
-
 class Node:
 	def __init__(self, x, y):
 		self.x = x
@@ -32,7 +31,6 @@ class Node:
 			glVertex2f(self.dimention[2], self.dimention[1])
 			glVertex2f(self.dimention[2], self.dimention[3])
 		glEnd()
-
 
 class Maze:
 	def __init__(self, width, height):
